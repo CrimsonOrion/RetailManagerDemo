@@ -9,7 +9,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RMData", "RMData\RMData.sql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMDesktop.UI", "RMDesktop.UI\RMDesktop.UI.csproj", "{9EE107CD-22D2-4AC4-B707-9CD51151C7E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMDesktop.Library", "RMDesktop.Library\RMDesktop.Library.csproj", "{3B11DEAD-B9EC-4951-9704-950F02B3AD58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMDesktop.FW.Library", "RMDesktop.FW.Library\RMDesktop.FW.Library.csproj", "{E45BB6BF-0E91-4F8C-AA5C-03F79AB64E03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,10 @@ Global
 		{9EE107CD-22D2-4AC4-B707-9CD51151C7E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EE107CD-22D2-4AC4-B707-9CD51151C7E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EE107CD-22D2-4AC4-B707-9CD51151C7E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B11DEAD-B9EC-4951-9704-950F02B3AD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B11DEAD-B9EC-4951-9704-950F02B3AD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B11DEAD-B9EC-4951-9704-950F02B3AD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B11DEAD-B9EC-4951-9704-950F02B3AD58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E45BB6BF-0E91-4F8C-AA5C-03F79AB64E03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E45BB6BF-0E91-4F8C-AA5C-03F79AB64E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E45BB6BF-0E91-4F8C-AA5C-03F79AB64E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E45BB6BF-0E91-4F8C-AA5C-03F79AB64E03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
