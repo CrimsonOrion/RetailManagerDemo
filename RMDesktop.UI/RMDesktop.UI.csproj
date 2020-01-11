@@ -111,12 +111,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RMDesktop.Library\RMDesktop.Library.csproj">
-      <Project>{3b11dead-b9ec-4951-9704-950f02b3ad58}</Project>
-      <Name>RMDesktop.Library</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
