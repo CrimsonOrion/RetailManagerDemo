@@ -1,8 +1,9 @@
+using RMDataManager.Areas.HelpPage.ModelDescriptions;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using RMDataManager.Areas.HelpPage.ModelDescriptions;
 
 namespace RMDataManager.Areas.HelpPage.Models
 {
@@ -45,13 +46,7 @@ namespace RMDataManager.Areas.HelpPage.Models
         /// <summary>
         /// Gets the request body parameter descriptions.
         /// </summary>
-        public IList<ParameterDescription> RequestBodyParameters
-        {
-            get
-            {
-                return GetParameterDescriptions(RequestModelDescription);
-            }
-        }
+        public IList<ParameterDescription> RequestBodyParameters => GetParameterDescriptions(RequestModelDescription);
 
         /// <summary>
         /// Gets or sets the <see cref="ModelDescription"/> that describes the resource.
@@ -61,13 +56,7 @@ namespace RMDataManager.Areas.HelpPage.Models
         /// <summary>
         /// Gets the resource property descriptions.
         /// </summary>
-        public IList<ParameterDescription> ResourceProperties
-        {
-            get
-            {
-                return GetParameterDescriptions(ResourceDescription);
-            }
-        }
+        public IList<ParameterDescription> ResourceProperties => GetParameterDescriptions(ResourceDescription);
 
         /// <summary>
         /// Gets the sample requests associated with the API.
@@ -86,13 +75,13 @@ namespace RMDataManager.Areas.HelpPage.Models
 
         private static IList<ParameterDescription> GetParameterDescriptions(ModelDescription modelDescription)
         {
-            ComplexTypeModelDescription complexTypeModelDescription = modelDescription as ComplexTypeModelDescription;
+            var complexTypeModelDescription = modelDescription as ComplexTypeModelDescription;
             if (complexTypeModelDescription != null)
             {
                 return complexTypeModelDescription.Properties;
             }
 
-            CollectionModelDescription collectionModelDescription = modelDescription as CollectionModelDescription;
+            var collectionModelDescription = modelDescription as CollectionModelDescription;
             if (collectionModelDescription != null)
             {
                 complexTypeModelDescription = collectionModelDescription.ElementDescription as ComplexTypeModelDescription;

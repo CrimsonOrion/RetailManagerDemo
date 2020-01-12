@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
+
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace RMDataManager.Models
 {
@@ -24,10 +24,7 @@ namespace RMDataManager.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
-        
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
+
+        public static ApplicationDbContext Create() => new ApplicationDbContext();
     }
 }

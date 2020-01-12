@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +13,6 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
 using System.Xml.Linq;
-using Newtonsoft.Json;
 
 namespace RMDataManager.Areas.HelpPage
 {
@@ -66,20 +67,14 @@ namespace RMDataManager.Areas.HelpPage
         /// </summary>
         /// <param name="api">The <see cref="ApiDescription"/>.</param>
         /// <returns>The samples keyed by media type.</returns>
-        public IDictionary<MediaTypeHeaderValue, object> GetSampleRequests(ApiDescription api)
-        {
-            return GetSample(api, SampleDirection.Request);
-        }
+        public IDictionary<MediaTypeHeaderValue, object> GetSampleRequests(ApiDescription api) => GetSample(api, SampleDirection.Request);
 
         /// <summary>
         /// Gets the response body samples for a given <see cref="ApiDescription"/>.
         /// </summary>
         /// <param name="api">The <see cref="ApiDescription"/>.</param>
         /// <returns>The samples keyed by media type.</returns>
-        public IDictionary<MediaTypeHeaderValue, object> GetSampleResponses(ApiDescription api)
-        {
-            return GetSample(api, SampleDirection.Response);
-        }
+        public IDictionary<MediaTypeHeaderValue, object> GetSampleResponses(ApiDescription api) => GetSample(api, SampleDirection.Response);
 
         /// <summary>
         /// Gets the request or response body samples.
@@ -93,11 +88,10 @@ namespace RMDataManager.Areas.HelpPage
             {
                 throw new ArgumentNullException("api");
             }
-            string controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-            string actionName = api.ActionDescriptor.ActionName;
-            IEnumerable<string> parameterNames = api.ParameterDescriptions.Select(p => p.Name);
-            Collection<MediaTypeFormatter> formatters;
-            Type type = ResolveType(api, controllerName, actionName, parameterNames, sampleDirection, out formatters);
+            var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
+            var actionName = api.ActionDescriptor.ActionName;
+            var parameterNames = api.ParameterDescriptions.Select(p => p.Name);
+            var type = ResolveType(api, controllerName, actionName, parameterNames, sampleDirection, out var formatters);
             var samples = new Dictionary<MediaTypeHeaderValue, object>();
 
             // Use the samples provided directly for actions
@@ -111,14 +105,14 @@ namespace RMDataManager.Areas.HelpPage
             // Here we cannot rely on formatters because we don't know what's in the HttpResponseMessage, it might not even use formatters.
             if (type != null && !typeof(HttpResponseMessage).IsAssignableFrom(type))
             {
-                object sampleObject = GetSampleObject(type);
+                var sampleObject = GetSampleObject(type);
                 foreach (var formatter in formatters)
                 {
-                    foreach (MediaTypeHeaderValue mediaType in formatter.SupportedMediaTypes)
+                    foreach (var mediaType in formatter.SupportedMediaTypes)
                     {
                         if (!samples.ContainsKey(mediaType))
                         {
-                            object sample = GetActionSample(controllerName, actionName, parameterNames, type, formatter, mediaType, sampleDirection);
+                            var sample = GetActionSample(controllerName, actionName, parameterNames, type, formatter, mediaType, sampleDirection);
 
                             // If no sample found, try generate sample using formatter and sample object
                             if (sample == null && sampleObject != null)
@@ -148,13 +142,12 @@ namespace RMDataManager.Areas.HelpPage
         /// <returns>The sample that matches the parameters.</returns>
         public virtual object GetActionSample(string controllerName, string actionName, IEnumerable<string> parameterNames, Type type, MediaTypeFormatter formatter, MediaTypeHeaderValue mediaType, SampleDirection sampleDirection)
         {
-            object sample;
 
             // First, try to get the sample provided for the specified mediaType, sampleDirection, controllerName, actionName and parameterNames.
             // If not found, try to get the sample provided for the specified mediaType, sampleDirection, controllerName and actionName regardless of the parameterNames.
             // If still not found, try to get the sample provided for the specified mediaType and type.
             // Finally, try to get the sample provided for the specified mediaType.
-            if (ActionSamples.TryGetValue(new HelpPageSampleKey(mediaType, sampleDirection, controllerName, actionName, parameterNames), out sample) ||
+            if (ActionSamples.TryGetValue(new HelpPageSampleKey(mediaType, sampleDirection, controllerName, actionName, parameterNames), out var sample) ||
                 ActionSamples.TryGetValue(new HelpPageSampleKey(mediaType, sampleDirection, controllerName, actionName, new[] { "*" }), out sample) ||
                 ActionSamples.TryGetValue(new HelpPageSampleKey(mediaType, type), out sample) ||
                 ActionSamples.TryGetValue(new HelpPageSampleKey(mediaType), out sample))
@@ -177,12 +170,11 @@ namespace RMDataManager.Areas.HelpPage
             Justification = "Even if all items in SampleObjectFactories throw, problem will be visible as missing sample.")]
         public virtual object GetSampleObject(Type type)
         {
-            object sampleObject;
 
-            if (!SampleObjects.TryGetValue(type, out sampleObject))
+            if (!SampleObjects.TryGetValue(type, out var sampleObject))
             {
                 // No specific object available, try our factories.
-                foreach (Func<HelpPageSampleGenerator, Type, object> factory in SampleObjectFactories)
+                foreach (var factory in SampleObjectFactories)
                 {
                     if (factory == null)
                     {
@@ -214,11 +206,10 @@ namespace RMDataManager.Areas.HelpPage
         /// <returns>The type.</returns>
         public virtual Type ResolveHttpRequestMessageType(ApiDescription api)
         {
-            string controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-            string actionName = api.ActionDescriptor.ActionName;
-            IEnumerable<string> parameterNames = api.ParameterDescriptions.Select(p => p.Name);
-            Collection<MediaTypeFormatter> formatters;
-            return ResolveType(api, controllerName, actionName, parameterNames, SampleDirection.Request, out formatters);
+            var controllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
+            var actionName = api.ActionDescriptor.ActionName;
+            var parameterNames = api.ParameterDescriptions.Select(p => p.Name);
+            return ResolveType(api, controllerName, actionName, parameterNames, SampleDirection.Request, out var formatters);
         }
 
         /// <summary>
@@ -241,12 +232,11 @@ namespace RMDataManager.Areas.HelpPage
             {
                 throw new ArgumentNullException("api");
             }
-            Type type;
-            if (ActualHttpMessageTypes.TryGetValue(new HelpPageSampleKey(sampleDirection, controllerName, actionName, parameterNames), out type) ||
+            if (ActualHttpMessageTypes.TryGetValue(new HelpPageSampleKey(sampleDirection, controllerName, actionName, parameterNames), out var type) ||
                 ActualHttpMessageTypes.TryGetValue(new HelpPageSampleKey(sampleDirection, controllerName, actionName, new[] { "*" }), out type))
             {
                 // Re-compute the supported formatters based on type
-                Collection<MediaTypeFormatter> newFormatters = new Collection<MediaTypeFormatter>();
+                var newFormatters = new Collection<MediaTypeFormatter>();
                 foreach (var formatter in api.ActionDescriptor.Configuration.Formatters)
                 {
                     if (IsFormatSupported(sampleDirection, formatter, type))
@@ -261,7 +251,7 @@ namespace RMDataManager.Areas.HelpPage
                 switch (sampleDirection)
                 {
                     case SampleDirection.Request:
-                        ApiParameterDescription requestBodyParameter = api.ParameterDescriptions.FirstOrDefault(p => p.Source == ApiParameterSource.FromBody);
+                        var requestBodyParameter = api.ParameterDescriptions.FirstOrDefault(p => p.Source == ApiParameterSource.FromBody);
                         type = requestBodyParameter == null ? null : requestBodyParameter.ParameterDescriptor.ParameterType;
                         formatters = api.SupportedRequestBodyFormatters;
                         break;
@@ -296,7 +286,7 @@ namespace RMDataManager.Areas.HelpPage
                 throw new ArgumentNullException("mediaType");
             }
 
-            object sample = String.Empty;
+            object sample = string.Empty;
             MemoryStream ms = null;
             HttpContent content = null;
             try
@@ -307,8 +297,8 @@ namespace RMDataManager.Areas.HelpPage
                     content = new ObjectContent(type, value, formatter, mediaType);
                     formatter.WriteToStreamAsync(type, value, ms, content, null).Wait();
                     ms.Position = 0;
-                    StreamReader reader = new StreamReader(ms);
-                    string serializedSampleString = reader.ReadToEnd();
+                    var reader = new StreamReader(ms);
+                    var serializedSampleString = reader.ReadToEnd();
                     if (mediaType.MediaType.ToUpperInvariant().Contains("XML"))
                     {
                         serializedSampleString = TryFormatXml(serializedSampleString);
@@ -322,7 +312,7 @@ namespace RMDataManager.Areas.HelpPage
                 }
                 else
                 {
-                    sample = new InvalidSample(String.Format(
+                    sample = new InvalidSample(string.Format(
                         CultureInfo.CurrentCulture,
                         "Failed to generate the sample for media type '{0}'. Cannot use formatter '{1}' to write type '{2}'.",
                         mediaType,
@@ -332,7 +322,7 @@ namespace RMDataManager.Areas.HelpPage
             }
             catch (Exception e)
             {
-                sample = new InvalidSample(String.Format(
+                sample = new InvalidSample(string.Format(
                     CultureInfo.CurrentCulture,
                     "An exception has occurred while using the formatter '{0}' to generate sample for media type '{1}'. Exception message: {2}",
                     formatter.GetType().Name,
@@ -356,7 +346,7 @@ namespace RMDataManager.Areas.HelpPage
 
         internal static Exception UnwrapException(Exception exception)
         {
-            AggregateException aggregateException = exception as AggregateException;
+            var aggregateException = exception as AggregateException;
             if (aggregateException != null)
             {
                 return aggregateException.Flatten().InnerException;
@@ -368,7 +358,7 @@ namespace RMDataManager.Areas.HelpPage
         private static object DefaultSampleObjectFactory(HelpPageSampleGenerator sampleGenerator, Type type)
         {
             // Try to create a default sample object
-            ObjectGenerator objectGenerator = new ObjectGenerator();
+            var objectGenerator = new ObjectGenerator();
             return objectGenerator.GenerateObject(type);
         }
 
@@ -377,7 +367,7 @@ namespace RMDataManager.Areas.HelpPage
         {
             try
             {
-                object parsedJson = JsonConvert.DeserializeObject(str);
+                var parsedJson = JsonConvert.DeserializeObject(str);
                 return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
             }
             catch
@@ -392,7 +382,7 @@ namespace RMDataManager.Areas.HelpPage
         {
             try
             {
-                XDocument xml = XDocument.Parse(str);
+                var xml = XDocument.Parse(str);
                 return xml.ToString();
             }
             catch
@@ -416,12 +406,12 @@ namespace RMDataManager.Areas.HelpPage
 
         private IEnumerable<KeyValuePair<HelpPageSampleKey, object>> GetAllActionSamples(string controllerName, string actionName, IEnumerable<string> parameterNames, SampleDirection sampleDirection)
         {
-            HashSet<string> parameterNamesSet = new HashSet<string>(parameterNames, StringComparer.OrdinalIgnoreCase);
+            var parameterNamesSet = new HashSet<string>(parameterNames, StringComparer.OrdinalIgnoreCase);
             foreach (var sample in ActionSamples)
             {
-                HelpPageSampleKey sampleKey = sample.Key;
-                if (String.Equals(controllerName, sampleKey.ControllerName, StringComparison.OrdinalIgnoreCase) &&
-                    String.Equals(actionName, sampleKey.ActionName, StringComparison.OrdinalIgnoreCase) &&
+                var sampleKey = sample.Key;
+                if (string.Equals(controllerName, sampleKey.ControllerName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(actionName, sampleKey.ActionName, StringComparison.OrdinalIgnoreCase) &&
                     (sampleKey.ParameterNames.SetEquals(new[] { "*" }) || parameterNamesSet.SetEquals(sampleKey.ParameterNames)) &&
                     sampleDirection == sampleKey.SampleDirection)
                 {
@@ -432,7 +422,7 @@ namespace RMDataManager.Areas.HelpPage
 
         private static object WrapSampleIfString(object sample)
         {
-            string stringSample = sample as string;
+            var stringSample = sample as string;
             if (stringSample != null)
             {
                 return new TextSample(stringSample);

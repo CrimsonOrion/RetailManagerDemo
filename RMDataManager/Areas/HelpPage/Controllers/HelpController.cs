@@ -1,8 +1,5 @@
-using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using RMDataManager.Areas.HelpPage.ModelDescriptions;
-using RMDataManager.Areas.HelpPage.Models;
 
 namespace RMDataManager.Areas.HelpPage.Controllers
 {
@@ -18,10 +15,7 @@ namespace RMDataManager.Areas.HelpPage.Controllers
         {
         }
 
-        public HelpController(HttpConfiguration config)
-        {
-            Configuration = config;
-        }
+        public HelpController(HttpConfiguration config) => Configuration = config;
 
         public HttpConfiguration Configuration { get; private set; }
 
@@ -33,9 +27,9 @@ namespace RMDataManager.Areas.HelpPage.Controllers
 
         public ActionResult Api(string apiId)
         {
-            if (!String.IsNullOrEmpty(apiId))
+            if (!string.IsNullOrEmpty(apiId))
             {
-                HelpPageApiModel apiModel = Configuration.GetHelpPageApiModel(apiId);
+                var apiModel = Configuration.GetHelpPageApiModel(apiId);
                 if (apiModel != null)
                 {
                     return View(apiModel);
@@ -47,11 +41,10 @@ namespace RMDataManager.Areas.HelpPage.Controllers
 
         public ActionResult ResourceModel(string modelName)
         {
-            if (!String.IsNullOrEmpty(modelName))
+            if (!string.IsNullOrEmpty(modelName))
             {
-                ModelDescriptionGenerator modelDescriptionGenerator = Configuration.GetModelDescriptionGenerator();
-                ModelDescription modelDescription;
-                if (modelDescriptionGenerator.GeneratedModels.TryGetValue(modelName, out modelDescription))
+                var modelDescriptionGenerator = Configuration.GetModelDescriptionGenerator();
+                if (modelDescriptionGenerator.GeneratedModels.TryGetValue(modelName, out var modelDescription))
                 {
                     return View(modelDescription);
                 }
