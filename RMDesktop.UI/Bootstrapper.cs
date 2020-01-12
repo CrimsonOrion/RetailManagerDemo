@@ -31,6 +31,10 @@ namespace RMDesktop.UI
             _container.Instance(_container);
 
             _container
+                .PerRequest<IProductEndpoint, ProductEndpoint>()
+                ;
+
+            _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()

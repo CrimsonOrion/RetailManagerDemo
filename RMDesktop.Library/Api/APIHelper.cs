@@ -14,6 +14,8 @@ namespace RMDesktop.Library.Api
         private HttpClient _apiClient;
         private readonly ILoggedInUserModel _loggedInUser;
 
+        public HttpClient ApiClient => _apiClient;
+
         public APIHelper(ILoggedInUserModel loggedInUser)
         {
             _loggedInUser = loggedInUser;
