@@ -6,13 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Linq;
+using RMDesktop.UI.Helpers;
+using System.Windows.Controls;
 
 namespace RMDesktop.UI
 {
     public class Bootstrapper : BootstrapperBase
     {
         private readonly SimpleContainer _container = new SimpleContainer();
-        public Bootstrapper() => Initialize();
+        public Bootstrapper()
+        {
+            Initialize();
+
+            ConventionManager.AddElementConvention<PasswordBox>(
+            PasswordBoxHelper.BoundPasswordProperty,
+            "Password",
+            "PasswordChanged");
+        }
 
         protected override void Configure()
         {
