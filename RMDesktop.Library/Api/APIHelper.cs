@@ -1,4 +1,5 @@
 ﻿using RMDesktop.Library.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,7 +12,7 @@ namespace RMDesktop.Library.Api
     public class APIHelper : IAPIHelper
     {
         private HttpClient _apiClient;
-        ILoggedInUserModel _loggedInUser;
+        private readonly ILoggedInUserModel _loggedInUser;
 
         public APIHelper(ILoggedInUserModel loggedInUser)
         {

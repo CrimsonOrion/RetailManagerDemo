@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
+
 using RMDesktop.Library.Api;
+
 using System;
 using System.Threading.Tasks;
 
