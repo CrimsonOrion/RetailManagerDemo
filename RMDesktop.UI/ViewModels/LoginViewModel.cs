@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 
 using RMDesktop.Library.Api;
+using RMDesktop.UI.EventModels;
 
 using System;
 using System.Threading.Tasks;
@@ -12,9 +13,14 @@ namespace RMDesktop.UI.ViewModels
         private string _username;
         private string _password;
         private readonly IAPIHelper _apiHelper;
+        private readonly IEventAggregator _eventAggregator;
         private string _errorMessage;
 
-        public LoginViewModel(IAPIHelper apiHelper) => _apiHelper = apiHelper;
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator eventAggregator)
+        {
+            _apiHelper = apiHelper;
+            _eventAggregator = eventAggregator;
+        }
 
         public string Username { get => _username; set { _username = value; NotifyOfPropertyChange(() => Username); } }
         public string Password { get => _password; set { _password = value; NotifyOfPropertyChange(() => Password); NotifyOfPropertyChange(() => CanLogIn); } }
@@ -42,6 +48,8 @@ namespace RMDesktop.UI.ViewModels
                 var result = await _apiHelper.Authenticate(Username, Password);
 
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+                _eventAggregator.PublishOnUIThread(new LogOnEvent());
             }
             catch (Exception ex)
             {
