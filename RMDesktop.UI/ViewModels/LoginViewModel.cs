@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
+
 using RMDesktop.UI.Helpers;
+
 using System;
 using System.Threading.Tasks;
 
@@ -9,19 +11,16 @@ namespace RMDesktop.UI.ViewModels
     {
         private string _username;
         private string _password;
-        IAPIHelper _apiHelper;
+        private readonly IAPIHelper _apiHelper;
         private string _errorMessage;
 
-        public LoginViewModel(IAPIHelper apiHelper)
-        {
-            _apiHelper = apiHelper;
-        }
+        public LoginViewModel(IAPIHelper apiHelper) => _apiHelper = apiHelper;
 
         public string Username { get => _username; set { _username = value; NotifyOfPropertyChange(() => Username); } }
         public string Password { get => _password; set { _password = value; NotifyOfPropertyChange(() => Password); NotifyOfPropertyChange(() => CanLogIn); } }
         public bool IsErrorVisible
-        { 
-            get 
+        {
+            get
             {
                 var output = false;
                 if (ErrorMessage?.Length > 0)
@@ -39,8 +38,8 @@ namespace RMDesktop.UI.ViewModels
         {
             try
             {
-                var result = await _apiHelper.Authenticate(Username, Password);
                 ErrorMessage = string.Empty;
+                var result = await _apiHelper.Authenticate(Username, Password);
             }
             catch (Exception ex)
             {
