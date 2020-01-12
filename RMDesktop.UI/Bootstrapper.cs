@@ -1,12 +1,12 @@
 ﻿using Caliburn.Micro;
 
+using RMDesktop.UI.Helpers;
 using RMDesktop.UI.ViewModels;
 
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Linq;
-using RMDesktop.UI.Helpers;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace RMDesktop.UI
