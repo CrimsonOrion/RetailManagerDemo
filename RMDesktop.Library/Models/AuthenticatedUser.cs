@@ -1,4 +1,4 @@
-﻿namespace RMDesktop.UI.Models
+﻿namespace RMDesktop.Library.Models
 {
     public class AuthenticatedUser
     {
