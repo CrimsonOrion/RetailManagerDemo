@@ -47,20 +47,7 @@ namespace RMDesktop.UI.ViewModels
             Products = new BindingList<ProductModel>(products);
         }
 
-        public bool CanAddToCart
-        {
-            get
-            {
-                var output = false;
-
-                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
-                {
-                    output = true;
-                }
-
-                return output;
-            }
-        }
+        public bool CanAddToCart => ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity;
 
         public void AddToCart()
         {
@@ -122,33 +109,8 @@ namespace RMDesktop.UI.ViewModels
 
         }
 
-        private decimal CalculateSubTotal()
-        {
-            var subTotal = 0m;
+        private decimal CalculateSubTotal() => Cart.Sum(_ => _.Product.RetailPrice * _.QuantityInCart);
 
-            foreach (var item in Cart)
-            {
-                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-            }
-
-            return subTotal;
-        }
-
-        private decimal CalculateTax()
-        {
-            var taxAmount = 0m;
-
-            var taxRate = _configHelper.GetTaxRate();
-
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate / 100));
-                }
-            }
-
-            return taxAmount;
-        }
+        private decimal CalculateTax() => Cart.Where(_ => _.Product.IsTaxable).Sum(_ => _.Product.RetailPrice * _.QuantityInCart * (_configHelper.GetTaxRate() / 100));
     }
 }
