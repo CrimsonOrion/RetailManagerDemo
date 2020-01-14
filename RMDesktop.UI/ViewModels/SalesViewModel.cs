@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 
 using RMDesktop.Library.Api;
+using RMDesktop.Library.Helpers;
 using RMDesktop.Library.Models;
 
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace RMDesktop.UI.ViewModels
         private int _itemQuantity = 1;
         private ProductModel _selectedProduct;
         private readonly IProductEndpoint _productEndpoint;
+        private readonly IConfigHelper _configHelper;
 
         public BindingList<ProductModel> Products { get => _products; set { _products = value; NotifyOfPropertyChange(() => Products); } }
         public BindingList<CartItemModel> Cart { get => _cart; set { _cart = value; NotifyOfPropertyChange(() => Cart); } }
@@ -23,24 +25,15 @@ namespace RMDesktop.UI.ViewModels
         public ProductModel SelectedProduct { get => _selectedProduct; set { _selectedProduct = value; NotifyOfPropertyChange(() => SelectedProduct); NotifyOfPropertyChange(() => CanAddToCart); } }
         public int ItemQuantity { get => _itemQuantity; set { _itemQuantity = value; NotifyOfPropertyChange(() => ItemQuantity); NotifyOfPropertyChange(() => CanAddToCart); } }
 
-        public string SubTotal
+        public string SubTotal => CalculateSubTotal().ToString("C");
+        public string Tax => CalculateTax().ToString("C");
+        public string Total => (CalculateSubTotal() + CalculateTax()).ToString("C");
+
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
-            get
-            {
-                var subTotal = 0m;
-
-                foreach (var item in Cart)
-                {
-                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-                }
-                return subTotal.ToString("C");
-            }
+            _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
-
-        public string Tax => "$0.00";
-        public string Total => "$0.00";
-
-        public SalesViewModel(IProductEndpoint productEndpoint) => _productEndpoint = productEndpoint;
 
         protected override async void OnViewLoaded(object view)
         {
@@ -93,6 +86,8 @@ namespace RMDesktop.UI.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanRemoveFromCart
@@ -108,6 +103,8 @@ namespace RMDesktop.UI.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanCheckOut
@@ -123,6 +120,35 @@ namespace RMDesktop.UI.ViewModels
         public void CheckOut()
         {
 
+        }
+
+        private decimal CalculateSubTotal()
+        {
+            var subTotal = 0m;
+
+            foreach (var item in Cart)
+            {
+                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+            }
+
+            return subTotal;
+        }
+
+        private decimal CalculateTax()
+        {
+            var taxAmount = 0m;
+
+            var taxRate = _configHelper.GetTaxRate();
+
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate / 100));
+                }
+            }
+
+            return taxAmount;
         }
     }
 }

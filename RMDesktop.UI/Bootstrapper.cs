@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 
 using RMDesktop.Library.Api;
+using RMDesktop.Library.Helpers;
 using RMDesktop.Library.Models;
 using RMDesktop.UI.Helpers;
 using RMDesktop.UI.ViewModels;
@@ -38,6 +39,7 @@ namespace RMDesktop.UI
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>()
                 ;
 
