@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\RMData.publish.xml" />
+    <None Include="PublishLocations\RMData.publish-Work.xml" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\User.sql" />

@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Connection Settings
 connSettings.json
+
+# Work Publisher
+RMData.publish-Work.xml
